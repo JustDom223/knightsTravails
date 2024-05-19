@@ -56,8 +56,40 @@ function createDirectedGraph(){
     };
 
     function getEdges(){
+        return edges
+    };
+    function getEdgesArray(){
         return Array.from(edges)
     };
+
+    function bfs(start, finish) {
+        let count = 0;
+        let attemptedMoves = new Set();
+      
+        const queue = [start];
+        while (queue.length > 0) {
+            count++
+            const space = queue.shift();
+            console.log(`count: ${count++} for ${space}`);
+            const moves = edges.get(space.toString());
+        
+            for (const move of moves) {
+            if (!attemptedMoves.has(move)) {
+                attemptedMoves.add(move);
+                console.log(`Attempting move to ${move}`);
+        
+                if (move == finish) {
+                console.log('Finish found!');
+                console.log(`It will take ${count} moves`)
+                return;
+                }
+        
+                queue.push(move); // Add to queue only if not attempted before
+            }
+            }
+        }
+      }
+      
     
     return {
         addNode,
@@ -66,6 +98,8 @@ function createDirectedGraph(){
         createAllEdges,
         getNodes,
         getEdges,
+        getEdgesArray,
+        bfs,
       };
 }
 
@@ -88,47 +122,8 @@ myGraph.createGridNodes(8,8)
 
 myGraph.createAllEdges(legalMoves)
 
-
-// function createGrid(rows, col){
-//     let gridArray = []    
-//     for(let i = 0; i < rows; i++){
-//         let column = []    
-//         gridArray.push(column)
-//         for(let j = 0; j < col; j++){
-//             let row = [j]    
-//             column.push(row)
-//         }
-//     }
-//     return gridArray
-
-// }
-
-// const chessboard = createGrid(8,8)
-
-// console.log(chessboard)
+// console.log(myGraph.getEdges())
 
 
-
-
-// //the graph
-// const adjacencyList = new Map()
-
-// // add node
-
-// function addNode(coordinates){
-//     adjacencyList.set(coordinates, [])
-// }
-
-// function addEdge(origin,legalMove){
-//     adjacencyList.get(origin).push(legalMove)
-//     adjacencyList.get(legalMove).push(origin)
-// }
-
-
-// //Create the graph
-// chessboard.forEach(row =>{row.forEach(col =>addNode([row,col]))})
-// legalMoves.forEach(move => addEdge(...move))
-
-
-// console.log(adjacencyList)
-
+myGraph.bfs('0,0', '7,7')
+// myGraph.edges.get('2,1')
