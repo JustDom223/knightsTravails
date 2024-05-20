@@ -129,7 +129,6 @@ function createDirectedGraph(){
             }
           }
         }
-        function bfs
         
         return { steps: -1, path: [] }; // Return -1 if the finish is not reachable
       }
