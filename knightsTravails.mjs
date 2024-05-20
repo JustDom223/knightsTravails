@@ -62,33 +62,105 @@ function createDirectedGraph(){
         return Array.from(edges)
     };
 
-    function bfs(start, finish) {
-        let count = 0;
-        let attemptedMoves = new Set();
-      
-        const queue = [start];
+//     Function BFS(start, finish):
+//     Initialize visited as an empty set
+//     Initialize queue with the pair (start, 0)
+//     Initialize parentMap as an empty map
+
+//     While queue is not empty:
+//         Dequeue the first pair (currentNode, steps) from queue
+
+//         If currentNode is equal to finish:
+//             Initialize path as an empty list
+
+//             While node is not equal to start:
+//                 Insert node at the beginning of path
+//                 Set node to the parent of node in parentMap
+
+//             Insert start at the beginning of path
+//             Return an object with steps and path
+
+//         If currentNode is not in visited:
+//             Add currentNode to visited
+//             Retrieve moves (neighbors) of currentNode or initialize as empty list
+
+//             For each move in moves:
+//                 Convert move to string and store in moveStr
+
+//                 If moveStr is not in visited:
+//                     Enqueue the pair (moveStr, steps + 1) to queue
+//                     Set currentNode as the parent of moveStr in parentMap
+
+//     Return an object with steps as -1 and path as an empty list
+// End Function
+
+
+      function bfs(start, finish) {
+        const visited = new Set();
+        const queue = [[start.toString(), 0]]; // convert start to string as it wont work with the array as an input
+        const parentMap = new Map();
+        
         while (queue.length > 0) {
-            count++
-            const space = queue.shift();
-            console.log(`count: ${count++} for ${space}`);
-            const moves = edges.get(space.toString());
-        
-            for (const move of moves) {
-            if (!attemptedMoves.has(move)) {
-                attemptedMoves.add(move);
-                console.log(`Attempting move to ${move}`);
-        
-                if (move == finish) {
-                console.log('Finish found!');
-                console.log(`It will take ${count} moves`)
-                return;
-                }
-        
-                queue.push(move); // Add to queue only if not attempted before
+          const [currentNode, steps] = queue.shift();
+          
+          if (currentNode === finish.toString()) {
+            // reconstruct the path
+            const path = [];
+            let node = currentNode;
+            while (node !== start.toString()) {
+              path.unshift(node);
+              node = parentMap.get(node);
             }
+            path.unshift(start.toString());
+            
+            return { steps, path };
+          }
+          
+          if (!visited.has(currentNode)) {
+            visited.add(currentNode);
+            const moves = edges.get(currentNode) || [];
+            
+            for (const move of moves) {
+              const moveStr = move.toString();
+              if (!visited.has(moveStr)) {
+                queue.push([moveStr, steps + 1]);
+                parentMap.set(moveStr, currentNode);
+              }
+            }
+          }
+        }
+        function bfs
+        
+        return { steps: -1, path: [] }; // Return -1 if the finish is not reachable
+      }
+
+      
+      //dfs gets there. but because the map prevents repeated use it doesnt find the shortest path. and without the map it dose not stop. 
+      function dfs(start, finish, visited = new Set(), steps = 0){
+          console.log(start)
+          
+          visited.add(start)
+          
+          
+          const moves = edges.get(start)
+          // console.log(moves)
+          for(let move of moves){
+              move = move.toString()
+              if (move == finish){
+                  console.log(`${finish} has been found in ${steps} steps`)
+                }
+                if (!visited.has(move)){
+                    steps++
+                    dfs(move,finish,visited, steps + 1)
+                }
             }
         }
-      }
+        function knightMoves(start,finish){
+          const {steps, path} = bfs(start, finish)
+          console.log(`You made it in ${steps}! Here your path`)
+          console.log(path)
+  
+        }
       
     
     return {
@@ -100,6 +172,8 @@ function createDirectedGraph(){
         getEdges,
         getEdgesArray,
         bfs,
+        dfs,
+        knightMoves,
       };
 }
 
@@ -125,5 +199,7 @@ myGraph.createAllEdges(legalMoves)
 // console.log(myGraph.getEdges())
 
 
-myGraph.bfs('0,0', '7,7')
+myGraph.knightMoves('0,0', '3,3')
+
+// myGraph.dfs('0,0', '0,7')
 // myGraph.edges.get('2,1')
